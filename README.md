@@ -7,3 +7,5 @@ Build a full stack web application that allows the user to fill out clinical ass
 If the sum of a patient's answers for a given domain exceed a certain threshold, we will assign them the corresponding Level 2 Assessment for that domain.
 
 ## Solution
+
+
