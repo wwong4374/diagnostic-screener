@@ -1,0 +1,21 @@
+{
+  "name": "diagnostic-screener-server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.0",
+    "nodemon": "^3.1.10",
+    "ts-node-dev": "^2.0.0"
+  },
+  "scripts": {
+    "build": "rm -rf node_modules && yarn install",
+    "start": "yarn build && nodemon --exec ts-node src/app.ts"
+  }
+}
