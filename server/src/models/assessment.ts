@@ -5,7 +5,7 @@ export enum Domain {
   SubstanceUse = 'SUBSTANCE USE',
 }
 
-enum Level2Assessment {
+export enum Level2Assessment {
   Phq9 = 'PHQ-9',
   Asrm = 'ASRM',
   Assist = 'ASSIST',
@@ -29,3 +29,7 @@ export const DomainToLevel2Assessment: Record<Domain, Level2Assessment> = {
   [Domain.Anxiety]: Level2Assessment.Phq9,
   [Domain.SubstanceUse]: Level2Assessment.Assist,
 };
+
+export function isDomain(value: string): value is Domain {
+  return Object.values(Domain).includes(value as Domain)
+}

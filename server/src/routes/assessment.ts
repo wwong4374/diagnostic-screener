@@ -6,6 +6,7 @@ import {
   DomainToLevel2Assessment,
   DomainToScoreThreshold,
   Domain,
+  isDomain,
 } from '../models/assessment.js';
 
 export const router = express.Router();
@@ -25,7 +26,7 @@ interface ErrorResponse {
   error: string;
 }
 
-// TODO: Move these into DB
+// TODO: Move this mapping into DB
 const questionIdToDomain: Record<string, Domain> = {
   question_1: Domain.Depression,
   question_2: Domain.Mania,
@@ -56,15 +57,19 @@ router.post(
           });
           return;
         }
-
         domainScores[domain] = (domainScores[domain] ?? 0) + answer.value;
       }
 
       const recommendedAssessments = Object.entries(domainScores)
-        .filter(([domain, score]) => {
-          return score! >= DomainToScoreThreshold[domain as Domain];
+        .filter((entry): entry is [Domain, number] => {
+          const [domain, score] = entry;
+          return (
+            isDomain(domain) && 
+            score !== undefined && 
+            score >= DomainToScoreThreshold[domain]
+          );
         })
-        .map(([domain]) => DomainToLevel2Assessment[domain as Domain]);
+        .map(([domain]) => DomainToLevel2Assessment[domain]);
 
       res.json({ results: [...new Set(recommendedAssessments)] });
     } catch (error) {
