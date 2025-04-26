@@ -12,8 +12,8 @@ enum Level2Assessment {
 }
 
 export interface Answer {
-  questionId: string
-  value: number
+  questionId: string;
+  value: number;
 }
 
 export const DomainToScoreThreshold: Record<Domain, number> = {
@@ -21,11 +21,11 @@ export const DomainToScoreThreshold: Record<Domain, number> = {
   [Domain.Mania]: 2,
   [Domain.Anxiety]: 2,
   [Domain.SubstanceUse]: 1,
-}
+};
 
 export const DomainToLevel2Assessment: Record<Domain, Level2Assessment> = {
   [Domain.Depression]: Level2Assessment.Phq9,
   [Domain.Mania]: Level2Assessment.Asrm,
   [Domain.Anxiety]: Level2Assessment.Phq9,
   [Domain.SubstanceUse]: Level2Assessment.Assist,
-}
+};
