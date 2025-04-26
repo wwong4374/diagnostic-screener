@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^5.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vary": "^1.1.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
@@ -15,7 +16,7 @@
     "ts-node-dev": "^2.0.0"
   },
   "scripts": {
-    "build": "rm -rf node_modules && yarn install",
+    "build": "rm -rf node_modules && yarn install && tsc",
     "start": "yarn build && nodemon --exec ts-node src/app.ts"
   }
 }
