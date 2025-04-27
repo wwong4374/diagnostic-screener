@@ -18,7 +18,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          width: '200px',
+          width: '250px',
         },
       },
     },
