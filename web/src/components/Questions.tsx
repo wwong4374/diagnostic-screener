@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
+import { fetchScreener } from '../utils/screener';
+
 export function Questions() {
   const navigate = useNavigate();
   const [sectionIndex, setSectionIndex] = useState<number>(0);
@@ -19,13 +21,7 @@ export function Questions() {
     error: screenerError,
   } = useQuery({
     queryKey: ['screener'],
-    queryFn: async () => {
-      const response = await fetch('/api/screener');
-      if (!response.ok) {
-        throw new Error('Failed to fetch screener');
-      }
-      return await response.json();
-    },
+    queryFn: fetchScreener,
   });
   if (isScreenerLoading) {
     return <CircularProgress />;
