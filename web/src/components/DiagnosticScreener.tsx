@@ -17,7 +17,7 @@ export function DiagnosticScreener() {
     },
   });
   if (isScreenerLoading) {
-    return <CircularProgress></CircularProgress>
+    return <CircularProgress></CircularProgress>;
   }
   if (screenerError) {
     return <Alert>{`Error loading screener: ${screenerError}`}</Alert>;
@@ -25,7 +25,7 @@ export function DiagnosticScreener() {
 
   return (
     <Stack alignItems="center">
-      <Typography variant='h4'>{screener.fullName}</Typography>
+      <Typography variant="h4">{screener.fullName}</Typography>
     </Stack>
   );
 }

@@ -54,6 +54,38 @@ const screenerData = {
             "value": 4
           }
         ],
+      },
+      {
+        "type": "standard",
+        "title": "During the past TWO (2) WEEKS, how much (or how often) have you been bothered by the following problems?",
+        "questions": [
+          {
+            "questionId": "question_1",
+            "title": "Having trouble concentrating?"
+          },
+        ],
+        "answers": [
+          {
+            "title": "Not at all",
+            "value": 0
+          },
+          {
+            "title": "Rare, less than a day or two",
+            "value": 1
+          },
+          {
+            "title": "Several days",
+            "value": 2
+          },
+          {
+            "title": "More than half the days",
+            "value": 3
+          },
+          {
+            "title": "Nearly every day",
+            "value": 4
+          }
+        ],
       }
     ],
   },

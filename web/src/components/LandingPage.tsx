@@ -6,7 +6,7 @@ export function LandingPage() {
 
   return (
     <Stack alignItems="center" gap={2} sx={{ marginTop: 10 }}>
-      <Typography variant="h4">Welcome to Diagnostic Screener!</Typography>
+      <Typography variant="h4">Welcome to Diagnostic Screener</Typography>
       <Typography variant="h6" sx={{ marginTop: 10 }}>
         Click to get started:
       </Typography>
