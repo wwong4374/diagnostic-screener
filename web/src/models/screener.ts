@@ -11,7 +11,7 @@ interface Content {
   sections: Section[];
 }
 
-interface Section {
+export interface Section {
   title: string;
   type: string;
   questions: Question[];

@@ -2,13 +2,14 @@ import {
   Alert,
   Button,
   CircularProgress,
+  LinearProgress,
   Stack,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import type { Answer, AnswerOption, Screener } from '../models/screener';
+import type { Answer, AnswerOption, Section, Screener } from '../models/screener';
 import { fetchScreener } from '../utils/screener';
 import { ResultsPage } from './ResultsPage';
 
@@ -37,8 +38,15 @@ export function Questions() {
   }
   const currentSection = screener.content.sections[sectionIndex];
   const currentQuestion = currentSection?.questions[questionIndex];
+  const totalQuestionCount = screener.content.sections.reduce(
+    (sum: number, section: Section) => sum + section.questions.length,
+    0
+  );
 
-  async function selectAnswer(answer: AnswerOption, screener: Screener): Promise<void> {
+  async function selectAnswer(
+    answer: AnswerOption,
+    screener: Screener
+  ): Promise<void> {
     setAnswers((prevAnswers: Answer[]) => [
       ...prevAnswers,
       {
@@ -53,16 +61,16 @@ export function Questions() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(answers)
-        })
+          body: JSON.stringify(answers),
+        });
         if (!response.ok) {
           const error = await response.json();
-          <Alert severity="error">{`Failed to score assessment: ${JSON.stringify(error)}`}</Alert>
+          <Alert severity="error">{`Failed to score assessment: ${JSON.stringify(error)}`}</Alert>;
           return;
         }
         const data = await response.json();
-        setResults(data.results)
-        setShowResultsPage(true)
+        setResults(data.results);
+        setShowResultsPage(true);
       } else {
         setSectionIndex(sectionIndex + 1);
         setQuestionIndex(0);
@@ -73,7 +81,7 @@ export function Questions() {
   }
 
   if (showResultsPage) {
-    return <ResultsPage results={results}/>
+    return <ResultsPage results={results} />;
   }
 
   return (
@@ -82,18 +90,38 @@ export function Questions() {
       justifyContent="center"
       gap={4}
       sx={{
-        minHeight: "100vh",
+        marginTop: 10
       }}
     >
-      <Typography variant="h5">{screener.fullName}</Typography>
+      <Typography
+        variant="h5"
+        fontWeight={600}
+      >
+        Screener: {screener.fullName}
+      </Typography>
+      <Stack sx={{ width: '100%', maxWidth: 600, marginBottom: 5 }}>
+        <Typography variant="body1" textAlign="center" sx={{ marginBottom: 1 }}>
+          {`${answers.length} / ${totalQuestionCount}`} questions answered
+        </Typography>
+        <LinearProgress variant="determinate" value={(answers.length / totalQuestionCount) * 100}></LinearProgress>
+      </Stack>
       {currentSection && (
-        <Typography variant="h6">{currentSection.title}</Typography>
+        <Typography
+          variant="h6"
+          fontWeight={600}
+          sx={{
+            maxWidth: 650,
+          }}
+        >
+          {`Section ${sectionIndex + 1}: ${currentSection.title}`}
+        </Typography>
       )}
       {currentQuestion && (
-        <Typography variant="body1">{currentQuestion.title}</Typography>
+        <Typography variant="h6" fontWeight={600}>{`Question ${questionIndex + 1}: ${currentQuestion.title}`}</Typography>
       )}
       <Stack gap={2} flexDirection="column">
-        {currentSection && currentQuestion &&
+        {currentSection &&
+          currentQuestion &&
           currentSection.answers.map((answer: AnswerOption) => (
             <Button
               key={answer.value}
