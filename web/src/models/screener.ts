@@ -23,7 +23,12 @@ interface Question {
   questionId: string;
 }
 
-interface AnswerOption {
+export interface AnswerOption {
   title: string;
+  value: number;
+}
+
+export interface Answer {
+  questionId: string;
   value: number;
 }

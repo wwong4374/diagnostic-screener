@@ -6,15 +6,18 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
+import type { Answer, AnswerOption, Screener } from '../models/screener';
 import { fetchScreener } from '../utils/screener';
+import { ResultsPage } from './ResultsPage';
 
 export function Questions() {
-  const navigate = useNavigate();
   const [sectionIndex, setSectionIndex] = useState<number>(0);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [showResultsPage, setShowResultsPage] = useState<boolean>(false);
+  const [results, setResults] = useState<string[]>([]);
   const {
     data: screener,
     isLoading: isScreenerLoading,
@@ -35,13 +38,51 @@ export function Questions() {
   const currentSection = screener.content.sections[sectionIndex];
   const currentQuestion = currentSection?.questions[questionIndex];
 
+  async function selectAnswer(answer: AnswerOption, screener: Screener): Promise<void> {
+    setAnswers((prevAnswers: Answer[]) => [
+      ...prevAnswers,
+      {
+        questionId: currentQuestion.questionId,
+        value: answer.value,
+      },
+    ]);
+    if (questionIndex === currentSection.questions.length - 1) {
+      if (sectionIndex === screener.content.sections.length - 1) {
+        const response = await fetch('/api/assessments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(answers)
+        })
+        if (!response.ok) {
+          const error = await response.json();
+          <Alert severity="error">{`Failed to score assessment: ${JSON.stringify(error)}`}</Alert>
+          return;
+        }
+        const data = await response.json();
+        setResults(data.results)
+        setShowResultsPage(true)
+      } else {
+        setSectionIndex(sectionIndex + 1);
+        setQuestionIndex(0);
+      }
+      return;
+    }
+    setQuestionIndex((prevIndex) => prevIndex + 1);
+  }
+
+  if (showResultsPage) {
+    return <ResultsPage results={results}/>
+  }
+
   return (
     <Stack
       alignItems="center"
       justifyContent="center"
       gap={4}
       sx={{
-        minHeight: '100vh',
+        minHeight: "100vh",
       }}
     >
       <Typography variant="h5">{screener.fullName}</Typography>
@@ -52,23 +93,12 @@ export function Questions() {
         <Typography variant="body1">{currentQuestion.title}</Typography>
       )}
       <Stack gap={2} flexDirection="column">
-        {currentSection &&
-          currentSection.answers.map((answer: Record<string, any>) => (
+        {currentSection && currentQuestion &&
+          currentSection.answers.map((answer: AnswerOption) => (
             <Button
               key={answer.value}
               variant="contained"
-              onClick={() => {
-                if (questionIndex === currentSection.questions.length - 1) {
-                  if (sectionIndex === screener.content.sections.length - 1) {
-                    navigate('/results');
-                  } else {
-                    setSectionIndex(sectionIndex + 1);
-                    setQuestionIndex(0);
-                  }
-                  return;
-                }
-                setQuestionIndex((prevIndex) => prevIndex + 1);
-              }}
+              onClick={() => selectAnswer(answer, screener)}
             >
               {answer.title}
             </Button>

@@ -38,11 +38,11 @@ router.post(
   '/',
   express.json(),
   (
-    req: Request<{}, {}, AssessmentRequestBody>,
+    req: Request<{}, {}, Answer[]>,
     res: Response<SuccessResponse | ErrorResponse>
   ) => {
     try {
-      const { answers } = req.body;
+      const answers = req.body;
       if (!answers || !Array.isArray(answers)) {
         res.status(400).json({ error: 'Answers must be provided as an array' });
         return;
