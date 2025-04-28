@@ -1,5 +1,5 @@
-import express from 'express';
 import cors from 'cors';
+import express from 'express';
 
 import { router as assessmentRouter } from './routes/assessment.js';
 import { router as screenerRouter } from './routes/screener.js';

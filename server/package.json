@@ -5,7 +5,10 @@
   "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "knex": "^3.1.0",
+    "pg": "^8.15.6",
     "typescript": "^5.8.3",
     "vary": "^1.1.2"
   },
@@ -18,8 +21,7 @@
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
-    "rebuild": "rm -rf node_modules && yarn install",
-    "build": "tsc",
-    "start": "tsc --watch & nodemon dist/app.js"
+    "build": "rm -rf node_modules && yarn install",
+    "start": "tsc && --watch & nodemon dist/app.js"
   }
 }

@@ -1,22 +1,20 @@
 import express from 'express';
 import { Request, Response } from 'express';
 
+import { knex } from '../db/knex.js';
 import {
   Answer,
   DomainToLevel2Assessment,
   DomainToScoreThreshold,
   Domain,
   isDomain,
+  type Question,
 } from '../models/assessment.js';
 
 export const router = express.Router();
 
 const minAnswer = 0;
 const maxAnswer = 4;
-
-interface AssessmentRequestBody {
-  answers: Answer[];
-}
 
 interface SuccessResponse {
   results: string[];
@@ -26,18 +24,11 @@ interface ErrorResponse {
   error: string;
 }
 
-// TODO: Move this mapping into DB
-const questionIdToDomain: Record<string, Domain> = {
-  question_1: Domain.Depression,
-  question_2: Domain.Mania,
-  question_3: Domain.Anxiety,
-  question_4: Domain.SubstanceUse,
-};
 
 router.post(
   '/',
   express.json(),
-  (
+  async (
     req: Request<{}, {}, Answer[]>,
     res: Response<SuccessResponse | ErrorResponse>
   ) => {
@@ -48,6 +39,8 @@ router.post(
         return;
       }
 
+      const questions = await knex('questions').select('*');
+      const questionIdToDomain = Object.fromEntries(questions.map((question: Question) => [question.questionId, question.domain]))
       const domainScores: Partial<Record<Domain, number>> = {};
       for (const answer of answers) {
         const domain = questionIdToDomain[answer.questionId];
@@ -59,7 +52,6 @@ router.post(
         }
         domainScores[domain] = (domainScores[domain] ?? 0) + answer.value;
       }
-
       const recommendedAssessments = Object.entries(domainScores)
         .filter((entry): entry is [Domain, number] => {
           const [domain, score] = entry;

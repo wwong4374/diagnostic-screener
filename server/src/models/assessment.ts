@@ -11,6 +11,11 @@ export enum Level2Assessment {
   Assist = 'ASSIST',
 }
 
+export interface Question {
+  questionId: string,
+  domain: Domain,
+}
+
 export interface Answer {
   questionId: string;
   value: number;
