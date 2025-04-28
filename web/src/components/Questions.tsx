@@ -97,7 +97,7 @@ export function Questions() {
         variant="h5"
         fontWeight={600}
       >
-        Screener: {screener.fullName}
+        Screener: {screener.content.displayName}
       </Typography>
       <Stack sx={{ width: '100%', maxWidth: 600, marginBottom: 5 }}>
         <Typography variant="body1" textAlign="center" sx={{ marginBottom: 1 }}>
