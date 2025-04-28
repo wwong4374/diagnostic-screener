@@ -8,56 +8,74 @@ If the sum of a patient's answers for a given domain exceeds a certain threshold
 
 ## Solution
 
-Frameworks/Libraries Used:
+Built a full stack web application using the languages, frameworks, and libraries listed below. The rationale for choosing each technology is also provided below. To run the app locally, complete the Database, Server, and Frontend Setup sections below. Since this app will be used by people who may need mental health support, a soothing light blue theme was chosen to put the user at ease.
 
-Database: PostgreSQL
+**Database (DB):** PostgreSQL
 
-Backend: Node.js, Express, TypeScript, Knex
+Created a PostgreSQL database to persist the mapping between question ID and domain.
 
-Frontend: React, TypeScript, Vite, Material UI
+PostgreSQL was chosen because:
 
-**Database:**
+1. It is a relational DBMS. There is a many-to-one relationship between questions and domains, making PostgreSQL an appropriate choice for modeling this data.
+2. It supports user defined enums, which I used to enumerate the allowed values for each question's domain.
+3. It is reliable and stable. It is well documented and widely used, resulting in strong community support for troubleshooting and debugging.
+4. It is scalable - we can easily more tables and columns as our application evolves.
 
-Question-to-domain mappings are persisted in a PostgreSQL database. The schema is defined in SQL and seeded via a script for easy local setup.
+**Backend Server:** TypeScript, Node, Express, Knex
 
-PostgreSQL was chosen for its reliability, stability, and strong community support due to widespread adoption. Each question is associated with a domain, meaning the data is relational, making the relational PostgreSQL DBMS an appropriate choice. It also supports user-defined enum data types, which was used to enumerate the list of allowed domains. Finally, PostgreSQL is scalable because we can easily add more tables and columns as our application evolves.
+There are two endpoints in the backend server:
 
-**Server:**
+1. GET /screener returns the screener that the patient is asked to complete.
+2. POST /assessment accepts the patient's answers to the initial screener questions. It scores these answers and returns the Level 2 Assessment(s) that should then be assigned to the patient.
 
-The backend is built with Node.js, Express, TypeScript, and Knex.js. There are two endpoints:
+TypeScript was chosen to provide static type safety, readability, and maintainability. Node was chosen for its speed and widespread use in building APIs. Express was chosen because it is simple, supports API routing, and supports middleware for authentication, logging, and error handling, which we may want to add in the future. Knex removes the need for raw SQL, therefore reducing the risk of SQL injection attacks. Knex also improves readability and maintainability by abstracting raw SQL into TypeScript code.
 
-1. GET /screener returns the screener that the patient is asked to complete. The screener questions are currently hardcoded.
-2. POST /assessment accepts an array of the patient's answers to the screener questions. It scores these answers and returns a list of the Level 2 Assessments that should then be assigned to the patient.
-
-Node.js is fast and allows access to a large package ecosystem via npm, ensuring that the code is extensible in the future if authentication or testing needs to be added. Express is a simple and extensible framework that allows developers to define middleware for authentication, logging, and error handling, which also ensures maintainable and extensible code. Finally, Knex.js removes the need for raw SQL and therefore helps prevent SQL injection attacks. It also abstracts raw SQL into TypeScript/JavaScript, providing readability and maintainability.
+**Frontend:** TypeScript, React, Material UI (MUI), Vite
 
 **Web UI:**
 
-The frontend is built with React and TypeScript, using Vite for fast development and Material UI (MUI) for consistent, modern components. Data fetching is managed with React Query.
+TypeScript was chosen to provide static type safety, readability, and maintainability. React was chosen because it is responsive, enables quick UI development, provides state management, and is widely used. Material UI provides pre-built, accessible, and modern React components for a polished UI and efficient development. Vite was chosen for its speed - it is quick to build and reload upon code updates.
 
-TypeScript is used on both the frontend and backend to prevent context switching between different languages. This allows for faster and more enjoyable developer experience.
+TypeScript is used on both the frontend and backend to remove context switching between different languages. This allows for a faster and more enjoyable developer experience.
 
 ## Deliverables
 
-Link to to the hosted application (if there is one): N/A, application is not hosted
+Link to to the hosted application (if there is one): N/A, application is not hosted.
 
-Instructions for running the code locally (if not hosted): See the database, server, and web UI setup sections below
+Instructions for running the code locally (if not hosted): See the Database Setup, Server Setup, and Web UI Setup sections below.
 
-Description of the problem and solution: See Problem and Solution sections above
+Description of the problem and solution: See Problem and Solution sections above.
 
-Reasoning behind your technical choices: See Solution section
+Reasoning behind your technical choices: See Solution section above.
 
 Describe how you would deploy this as a true production app on the platform of your choice:
 
-How would ensure the application is highly available and performs well?
+How would ensure the application is highly available and performs well? TODO: complete
 
 How would you secure it?
 
+1. First, require login on the UI. Assuming we have patient information, require that patients provide their email/phone number, last name, date of birth, and two factor authentication code to log in. This ensures that only the patient or guardian can open the screener. Upon login, server issues a JWT (JSON Web Token) token, which frontend will later use to make HTTP requests. 
+2. Next, secure the API endpoints. Implement a CORS (Cross-Origin Resource Sharing) restriction in the server to only allow HTTP requests that come from the web UI. Also, require that each request includes a valid JWT token in the headers. This ensures that only authenticated users can hit our API endpoints.
+3. Finally, secure the database. Knex is already implemented on the server to prevent developers from writing raw SQL, helping to prevent SQL injection attacks. Credentials are saved in environment variables and not hardcoded in code. For further security, I would add a password to the database and only accept connections that come from the backend server. Lastly, create a "patient" level role that only allows reading and upserting data and rejects any schema alertions or drop commands.
+
 What would you add to make it easier to troubleshoot problems while it is running live?
+
+The main addition I would make is logging throughout the frontend and backend to document what is happening in the app. These logs could be surfaced and persisted to a cloud provider like GCP or AWS for debugging purposes. I would add trace IDs to allow for tracing a request from frontend to backend to DB.
 
 Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project:
 
-Link to other code you're particularly proud of:
+Given the time constraint, most of the trade-offs that I made were in pursuit of faster development. Therefore, I chose to use TypeScript in both the frontend and backend code to avoid context switching between different languages. I also chose widely adopted frameworks and languages that are simple and enable quick development. For example, MUI's pre-built React components remove the need for custom CSS.
+
+If given additional time, I would:
+
+1. Update the GET /screener endpoint so the screener lives in and is fetched from the DB, rather than being hardcoded.
+2. Extend the data model. For example, I envision separate entities for users, questions, answers, and screeners.
+3. Implement authentication and authorization throughout the app. Require user login on the frontend, add authentication middleware in the API endpoints, and create different user types, like admin and patient, that have different permission levels.
+4. Add tests to both frontend and backend. Start with unit tests around the functions and endpoints. Also add end-to-end tests that confirm the app works as expected when given certain user inputs.
+5. Actually host the app.
+6. Add more error handling through the app.
+
+Link to other code you're particularly proud of: All of the code that I'm most proud of is in private repositories, but I enjoyed creating this app to track the rewards points in a shopping app: <https://github.com/wwong4374/rewards-points>
 
 Link to your resume or public profile: <https://www.linkedin.com/in/wilson-ka-wong/>
 
@@ -75,7 +93,7 @@ Start by setting up the screener database. This contains one table, questions, w
     ./reset_db.sh
     ```
 
-4. The output should indicate that the existing screener DB, if any, was dropped. It should also state that a new screener DB with one type, one table, and 4 rows was created:
+4. The output should indicate that a new screener DB with one type, one table, and 4 rows was created:
 
     ```sql
     DROP DATABASE
@@ -88,7 +106,7 @@ Start by setting up the screener database. This contains one table, questions, w
 
 ## Server Setup
 
-1. First, install Homebrew, Node.js, and yarn if needed:
+1. Install Homebrew, Node.js, and yarn if needed:
 
     ```sh
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -99,6 +117,7 @@ Start by setting up the screener database. This contains one table, questions, w
 2. Build and start the server:
 
     ```sh
+    cd server
     yarn build
     yarn start
     ```
@@ -111,6 +130,7 @@ Start by setting up the screener database. This contains one table, questions, w
 2. Build and start the web app:
 
     ```sh
+    cd web
     yarn build
     yarn start
     ```
