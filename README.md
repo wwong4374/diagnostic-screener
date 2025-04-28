@@ -8,11 +8,13 @@ If the sum of a patient's answers for a given domain exceeds a certain threshold
 
 ## Solution
 
-Built a full stack web application using the languages, frameworks, and libraries listed below. The rationale for choosing each technology is also provided below. To run the app locally, complete the Database, Server, and Frontend Setup sections below. Since this app will be used by people who may need mental health support, a soothing light blue theme was chosen to put the user at ease.
+Built a full stack web application that fulfills the requirements - since this app will be used by people seeking mental health support, a soothing light blue theme was chosen to put the user at ease.
+
+The languages, frameworks, and libraries that comprise the app are listed below, along with the rationale for choosing each technology. To run the app locally, complete the Database, Server, and Frontend Setup sections below.
 
 **Database (DB):** PostgreSQL
 
-Created a PostgreSQL database to persist the mapping between question ID and domain.
+Created a PostgreSQL database to persist the mappings between question ID and domain.
 
 PostgreSQL was chosen because:
 
@@ -26,15 +28,15 @@ PostgreSQL was chosen because:
 There are two endpoints in the backend server:
 
 1. GET /screener returns the screener that the patient is asked to complete.
-2. POST /assessment accepts the patient's answers to the initial screener questions. It scores these answers and returns the Level 2 Assessment(s) that should then be assigned to the patient.
+2. POST /assessment accepts the patient's answers to the initial screener questions. It scores these answers and returns the Level 2 Assessment(s) that should be assigned.
 
-TypeScript was chosen to provide static type safety, readability, and maintainability. Node was chosen for its speed and widespread use in building APIs. Express was chosen because it is simple, supports API routing, and supports middleware for authentication, logging, and error handling, which we may want to add in the future. Knex removes the need for raw SQL, therefore reducing the risk of SQL injection attacks. Knex also improves readability and maintainability by abstracting raw SQL into TypeScript code.
+TypeScript was chosen to provide static type safety, readability, and maintainability. Node is fast and widely used for building APIs. Express is simple, supports API routing, and supports middleware for authentication, logging, and error handling, which we might add in the future. Knex removes the need for raw SQL, reducing the risk of SQL injection. Knex improves readability and maintainability by abstracting raw SQL into TypeScript code.
 
 **Frontend:** TypeScript, React, Material UI (MUI), Vite
 
 **Web UI:**
 
-TypeScript was chosen to provide static type safety, readability, and maintainability. React was chosen because it is responsive, enables quick UI development, provides state management, and is widely used. Material UI provides pre-built, accessible, and modern React components for a polished UI and efficient development. Vite was chosen for its speed - it is quick to build and reload upon code updates.
+TypeScript was chosen for the same reasons as in the backend server. React is responsive, enables quick development, provides state management, and is widely used. Material UI provides pre-built React components for a modern, polished UI and faster development. Vite is quick to build and reload upon code updates.
 
 TypeScript is used on both the frontend and backend to remove context switching between different languages. This allows for a faster and more enjoyable developer experience.
 
@@ -50,21 +52,31 @@ Reasoning behind your technical choices: See Solution section above.
 
 Describe how you would deploy this as a true production app on the platform of your choice:
 
-How would ensure the application is highly available and performs well? TODO: complete
+1. Deploy the frontend as a static website on AWS S3. Use a Content Delivery Network (CDN) like AWS CloudFront to cache the website and distribute across geographies for faster loading.
+2. For the backend, first containerize with Docker so the app runs the same on any machine. Then, deploy the Docker image using AWS EC2, which allows for autoscaling as traffic grows.
+3. Host the database on AWS Relational Database Service (RDS), which provides automated backups and replication across geographies.
+
+How would ensure the application is highly available and performs well?
+
+1. For the frontend, AWS S3 already provides high availability, so I would deploy the website to AWS S3. The CDN would provide further availability by serving cached content from locations closest to users.
+2. For the backend, deploy to to multiple EC2 instances to provide redundancy if one server goes down. Enable auto-scaling to automatically start more instances when traffic grows. Also, implement a load balancer to balance traffic between servers.
+3. For the database, deploy to AWS RDS across multiple avability zones for redundancy. Enable read replicas to support high volumes of read requests.
 
 How would you secure it?
 
 1. First, require login on the UI. Assuming we have patient information, require that patients provide their email/phone number, last name, date of birth, and two factor authentication code to log in. This ensures that only the patient or guardian can open the screener. Upon login, server issues a JWT (JSON Web Token) token, which frontend will later use to make HTTP requests. 
 2. Next, secure the API endpoints. Implement a CORS (Cross-Origin Resource Sharing) restriction in the server to only allow HTTP requests that come from the web UI. Also, require that each request includes a valid JWT token in the headers. This ensures that only authenticated users can hit our API endpoints.
-3. Finally, secure the database. Knex is already implemented on the server to prevent developers from writing raw SQL, helping to prevent SQL injection attacks. Credentials are saved in environment variables and not hardcoded in code. For further security, I would add a password to the database and only accept connections that come from the backend server. Lastly, create a "patient" level role that only allows reading and upserting data and rejects any schema alertions or drop commands.
+3. Finally, secure the database. Knex is already implemented on the server to prevent developers from writing raw SQL, helping to prevent SQL injection attacks. Credentials are saved in environment variables and not hardcoded in code. For further security, I would add a database password and only accept connections that come from the backend server. Lastly, create a "patient" level role that only allows reading and upserting data and rejects any schema alertions or drop commands.
 
 What would you add to make it easier to troubleshoot problems while it is running live?
 
 The main addition I would make is logging throughout the frontend and backend to document what is happening in the app. These logs could be surfaced and persisted to a cloud provider like GCP or AWS for debugging purposes. I would add trace IDs to allow for tracing a request from frontend to backend to DB.
 
+I would also implement Sentry to track errors and performance on the frontend and send automated alerts if a serious issue occurs. Similarly, I would implement Prometheus metrics on the backend.
+
 Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project:
 
-Given the time constraint, most of the trade-offs that I made were in pursuit of faster development. Therefore, I chose to use TypeScript in both the frontend and backend code to avoid context switching between different languages. I also chose widely adopted frameworks and languages that are simple and enable quick development. For example, MUI's pre-built React components remove the need for custom CSS.
+Given the time constraint, I made technical choices in pursuit of faster development and focused on delivering the project requirements. Therefore, I chose to use TypeScript in both the frontend and backend code to avoid context switching between different languages. I also chose widely adopted frameworks and languages that are simple and enable quick development. For example, MUI's pre-built React components remove the need for custom CSS.
 
 If given additional time, I would:
 
