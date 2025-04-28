@@ -22,6 +22,6 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "rm -rf node_modules && yarn install",
-    "start": "tsc && --watch & nodemon dist/app.js"
+    "start": "tsc && nodemon dist/app.js"
   }
 }
