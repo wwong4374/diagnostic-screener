@@ -22,7 +22,7 @@
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "build": "rm -rf node_modules && yarn install && tsc && vite build",
+    "build": "rm -rf node_modules && rm -rf dist && yarn install && tsc && vite build",
     "start": "yarn build && vite"
   }
 }
