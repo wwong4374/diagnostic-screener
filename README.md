@@ -51,19 +51,19 @@ TypeScript is used on both the frontend and backend to remove context switching 
 **Describe how you would deploy this as a true production app on the platform of your choice:**
 
 1. Deploy the frontend as a static website on AWS S3. Use a Content Delivery Network (CDN) like AWS CloudFront to cache the website and distribute across geographies for faster loading.
-2. For the backend, first containerize with Docker so the app runs the same on any machine. Then, deploy the Docker image using AWS EC2, which allows for autoscaling as traffic grows.
+2. For the backend, first containerize with Docker so the app runs the same way on any machine. Then, deploy the Docker image using AWS EC2, which allows for autoscaling as traffic grows.
 3. Host the database on AWS Relational Database Service (RDS), which provides automated backups and replication across geographies.
 
 **How would ensure the application is highly available and performs well?**
 
 1. For the frontend, AWS S3 already provides high availability, so I would deploy the website to AWS S3. The CDN would provide further availability by serving cached content from locations closest to users.
-2. For the backend, deploy to to multiple EC2 instances to provide redundancy if one server goes down. Enable auto-scaling to automatically start more instances when traffic grows. Also, implement a load balancer to balance traffic between servers.
-3. For the database, deploy to AWS RDS across multiple avability zones for redundancy. Enable read replicas to support high volumes of read requests.
+2. For the backend, deploy to multiple EC2 instances to provide redundancy if one server goes down. Enable auto-scaling to automatically start more instances when traffic grows. Also, implement a load balancer to balance traffic between servers.
+3. For the database, deploy to AWS RDS across multiple availability zones for redundancy. Enable read replicas to support high volumes of read requests.
 
 **How would you secure it?**
 
-1. First, require login on the UI. Assuming we have patient information, require that patients provide their email/phone number, last name, date of birth, and two factor authentication code to log in. This ensures that only the patient or guardian can access the screener. Upon login, server issues a JWT (JSON Web Token) token, which frontend will later use to make HTTP requests.
-2. Next, secure the API endpoints. Implement a CORS (Cross-Origin Resource Sharing) restriction in the server to only accept HTTP requests that come from the web UI. Also, require that each request includes a valid JWT token in the headers. This ensures that only authenticated users can hit our API endpoints.
+1. First, require login on the UI. Assuming we have patient information, require that patients provide their email/phone number, last name, date of birth, and two factor authentication code to log in. This ensures that only the patient or guardian can access the screener. Upon login, server issues a JSON Web Token (JWT) token, which frontend will later use to make HTTP requests.
+2. Next, secure the API endpoints. Implement a Cross-Origin Resource Sharing (CORS) restriction in the server to only accept HTTP requests that come from the web UI. Also, require that each request includes a valid JWT token in the headers. This ensures that only authenticated users can hit our API endpoints.
 3. Finally, secure the database. Knex is already implemented on the server to remove raw SQL, helping to block SQL injection. Credentials are saved in environment variables and not hardcoded in code. For further security, I would add a database password and only accept connections that come from the backend server. Lastly, create a "patient" level role that only allows reading and upserting data and rejects any schema alertions or drop commands.
 
 **What would you add to make it easier to troubleshoot problems while it is running live?**
@@ -74,7 +74,7 @@ I would also implement Sentry to track errors and performance on the frontend an
 
 **Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project:**
 
-Given the time constraint, I made technical choices in pursuit of faster development and focused on delivering the project requirements. Therefore, I chose to use TypeScript in both the frontend and backend code to avoid context switching between different languages. I also chose widely adopted frameworks and languages that are simple and enable quick development. For example, MUI's pre-built React components remove the need for custom CSS.
+Given the time constraint, I made technical choices in pursuit of faster development and focused on delivering the project requirements. Therefore, I chose to use TypeScript in both the frontend and backend code to avoid context switching between different languages. I also chose widely adopted frameworks and languages that are simple and enable quick development. For example, MUI's pre-built React components reduce the need for custom CSS.
 
 If given additional time, I would:
 
@@ -84,14 +84,15 @@ If given additional time, I would:
 4. Add tests to both frontend and backend. Start with unit tests around the functions and endpoints. Also add end-to-end tests that confirm the app works as expected when given certain user inputs.
 5. Actually host the app.
 6. Add more error handling through the app.
+7. Continue improving the UI so it is even more modern and polished.
 
 **Link to other code you're particularly proud of:** All of the code that I'm most proud of is in private repositories, but I enjoyed creating this simple app to track rewards points: <https://github.com/wwong4374/rewards-points>
 
-**Link to your resume or public profile:** <https://www.linkedin.com/in/wilson-ka-wong/>. Please contact me for up to date resume.
+**Link to your resume or public profile:** <https://www.linkedin.com/in/wilson-ka-wong/>. Please contact me for updated resume.
 
 ## Database Setup
 
-Start by setting up the screener database. This contains one table, `questions`, which contains a list of questions that can be included in the screener, along with each question's domain.
+Start by setting up the screener database. This DB has one table, `questions`, which contains a list of questions that can be included in the screener, along with each question's domain.
 
 1. Install [PostgreSQL](https://www.postgresql.org/download/) and ensure `psql` is in your PATH.
 2. In `server/src/db`, make a copy of `.env.example` and save the new file as `.env`. If needed, edit the values to match your local Postgres credentials.
