@@ -8,12 +8,22 @@ If the sum of a patient's answers for a given domain exceeds a certain threshold
 
 ## Solution
 
-Database:
+Frameworks/Libraries Used:
+
+Database: PostgreSQL
+
+Backend: Node.js, Express, TypeScript, Knex
+
+Frontend: React, TypeScript, Vite, Material UI
+
+**Database:**
+
 Question-to-domain mappings are persisted in a PostgreSQL database. The schema is defined in SQL and seeded via a script for easy local setup.
 
 PostgreSQL was chosen for its reliability, stability, and strong community support due to widespread adoption. Each question is associated with a domain, meaning the data is relational, making the relational PostgreSQL DBMS an appropriate choice. It also supports user-defined enum data types, which was used to enumerate the list of allowed domains. Finally, PostgreSQL is scalable because we can easily add more tables and columns as our application evolves.
 
-Server:
+**Server:**
+
 The backend is built with Node.js, Express, TypeScript, and Knex.js. There are two endpoints:
 
 1. GET /screener returns the screener that the patient is asked to complete. The screener questions are currently hardcoded.
@@ -21,28 +31,34 @@ The backend is built with Node.js, Express, TypeScript, and Knex.js. There are t
 
 Node.js is fast and allows access to a large package ecosystem via npm, ensuring that the code is extensible in the future if authentication or testing needs to be added. Express is a simple and extensible framework that allows developers to define middleware for authentication, logging, and error handling, which also ensures maintainable and extensible code. Finally, Knex.js removes the need for raw SQL and therefore helps prevent SQL injection attacks. It also abstracts raw SQL into TypeScript/JavaScript, providing readability and maintainability.
 
-Web UI:
+**Web UI:**
+
 The frontend is built with React and TypeScript, using Vite for fast development and Material UI (MUI) for consistent, modern components. Data fetching is managed with React Query.
 
 TypeScript is used on both the frontend and backend to prevent context switching between different languages. This allows for faster and more enjoyable developer experience.
 
-Frameworks/Libraries Used:
-Database: PostgreSQL
-Backend: Node.js, Express, TypeScript, Knex
-Frontend: React, TypeScript, Vite, Material UI
-
 ## Deliverables
 
 Link to to the hosted application (if there is one): N/A, application is not hosted
+
 Instructions for running the code locally (if not hosted): See the database, server, and web UI setup sections below
+
 Description of the problem and solution: See Problem and Solution sections above
+
 Reasoning behind your technical choices: See Solution section
+
 Describe how you would deploy this as a true production app on the platform of your choice:
+
 How would ensure the application is highly available and performs well?
+
 How would you secure it?
+
 What would you add to make it easier to troubleshoot problems while it is running live?
-Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project: 
-Link to other code you're particularly proud of: 
+
+Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project:
+
+Link to other code you're particularly proud of:
+
 Link to your resume or public profile: <https://www.linkedin.com/in/wilson-ka-wong/>
 
 ## Database Setup
